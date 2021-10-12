@@ -15,7 +15,7 @@ import "../worker1.js";
 //   myWorker.postMessage('Hello World');
 
 // }
-function useWorker() {
+export function useWorker() {
     const workerRef = React.useRef(null);
     const [data, setData] = React.useState([]);
   

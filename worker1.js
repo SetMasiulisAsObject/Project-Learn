@@ -1,6 +1,8 @@
+// import React from "react";
+
 onmessage = function (e) {
   let a =0
-  for (let index = 0; index < 540; index++) {
+  for (let index = 0; index < 5550; index++) {
       a=a+index;
   }
   postMessage(a);
