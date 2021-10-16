@@ -1,66 +1,31 @@
 import Head from 'next/head'
-import { Box, Stack, Button, Text as TextR, Input, Checkbox } from '@chakra-ui/react';
-import { Text } from 'react-dom'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import { Box, Stack, Button, Text as TextR, Input, Checkbox, textDecoration, Spacer } from '@chakra-ui/react';
+import { Text } from 'react-dom';
+import Image from 'next/image';
+import styles from '../styles/Home.module.css';
 import React, {useRef, useState} from "react";
-import "../worker1.js";
-
-// function workerM() {
-//   var myWorker = new Worker(new URL('./worker.js', import.meta.url));
-//   myWorker.addEventListener('message', function(e) {
-//     console.log('Message from Worker: ' + e.data);
-//   })
-//   // @ts-ignore
-//   myWorker.postMessage('Hello World');
-
-// }
-export function useWorker() {
-    const workerRef = React.useRef(null);
-    const [data, setData] = React.useState([]);
-  
-    React.useEffect(() => {
-      workerRef.current = new Worker(new URL('../worker1.js', import.meta.url));
-      workerRef.current.onmessage = (event) => {
-        setData(event.data);
-        console.log(event.data);
-      };
-      return () => {
-        workerRef.current.terminate();
-      };
-    }, []);
-  
-    const handlePostMessage = () => {
-      const a = 'aha';
-      workerRef.current.postMessage({
-        a
-      });
-    };
-  
-    return { handlePostMessage, data };
-}
-  
-
+import {wrap} from "comlink";
+import {useWebworker} from '../utils/hooks/use-webworker';
 
 export default function Home() {
-  const { data, handlePostMessage } = useWorker();
-  const handleClick = async () => {
-    try {
-      //setIsLoading(true);
-      // @ts-ignore
-      handlePostMessage();
-    } catch (e) {
-      //console.log(e);
-      // setResult([]);
-      // setIsLoading(false);
-    }
-  };
+const [value, setValue] =useState(null);
+ const {result, run} = useWebworker((k) => k * k);
+
+ const handleValueChange=()=>{
+   setValue(event.target.value)
+ }
+
+ const handlerClick =()=>{
+   run(value)
+ }
+
   return (
     <div className={styles.container}>
       <Stack>
-        
-        <Button onClick={ handleClick}>Press me to start calculating</Button>
-        <TextR>{data}</TextR>
+        <Spacer height="100px"></Spacer>
+        <Input placeholder='value' onChange={handleValueChange}></Input>
+        <Button onClick={handlerClick}>Press me to start calculating</Button>
+        <TextR className='result'>{result}</TextR>
       </Stack>
       <Head>
         <title>Create Next App</title>
